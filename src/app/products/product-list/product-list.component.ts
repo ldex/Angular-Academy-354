@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { Product } from 'src/app/models/product.interface';
 import { ProductService } from 'src/app/services/product.service';
 
@@ -7,23 +8,32 @@ import { ProductService } from 'src/app/services/product.service';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
-export class ProductListComponent {
+export class ProductListComponent implements OnDestroy {
 
   title: string = 'Products';
   products: Product[];
+  products$: Observable<Product[]>;
   selectedProduct: Product;
+  subscription: Subscription;
 
   onSelect(product: Product) {
     this.selectedProduct = product;
   }
 
-  constructor(private productService: ProductService) {
+  ngOnDestroy() {
+   // this.subscription.unsubscribe();
+  }
 
-    productService
-      .products$
-      .subscribe(
-        results => this.products = results
-      )
+  constructor(private productService: ProductService) {
+   // this.subscription = new Subscription();
+    this.products$ = productService.products$;
+    // this.subscription.add(
+    //   productService
+    //   .products$
+    //   .subscribe(
+    //     results => this.products = results
+    //   )
+    // );
 
   }
 
