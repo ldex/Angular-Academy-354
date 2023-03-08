@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { Product } from 'src/app/models/product.interface';
 import { ProductService } from 'src/app/services/product.service';
@@ -39,13 +40,17 @@ export class ProductListComponent implements OnDestroy {
 
   onSelect(product: Product) {
     this.selectedProduct = product;
+    this.router.navigateByUrl('/products/' + product.id);
   }
 
   ngOnDestroy() {
    // this.subscription.unsubscribe();
   }
 
-  constructor(private productService: ProductService) {
+  constructor(
+    private productService: ProductService,
+    private router: Router) {
+
     this.products$ = this.productService.products$;
 
    // this.subscription = new Subscription();
