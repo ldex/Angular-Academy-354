@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product.interface';
 import { ProductService } from 'src/app/services/product.service';
 
@@ -14,7 +14,8 @@ export class ProductDetailComponent {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private productService: ProductService
+    private productService: ProductService,
+    private router: Router
   ) {
     let id = activatedRoute.snapshot.params['id'];
 
@@ -23,6 +24,19 @@ export class ProductDetailComponent {
       .getProductById(id)
       .subscribe(
         result => this.product = result
+      )
+  }
+
+  deleteProduct() {
+    this
+      .productService
+      .deleteProduct(this.product.id)
+      .subscribe(
+        () => {
+          console.log('Product deleted.');
+          this.productService.initProducts();
+          this.router.navigateByUrl('/products');
+        }
       )
   }
 
