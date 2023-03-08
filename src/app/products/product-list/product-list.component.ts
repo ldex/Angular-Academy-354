@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Product } from 'src/app/models/product.interface';
 import { ProductService } from 'src/app/services/product.service';
@@ -13,8 +13,29 @@ export class ProductListComponent implements OnDestroy {
   title: string = 'Products';
   products: Product[];
   products$: Observable<Product[]>;
-  selectedProduct: Product;
-  subscription: Subscription;
+  selectedProduct: Product | null;
+  // subscription: Subscription;
+
+  // Pagination
+  pageSize = 5;
+  start = 0;
+  end = this.pageSize;
+  pageNumber = 1;
+
+  previousPage() {
+    this.start -= this.pageSize;
+    this.end -= this.pageSize;
+    this.pageNumber--;
+    this.selectedProduct = null;
+  }
+
+  nextPage() {
+    this.start += this.pageSize;
+    this.end += this.pageSize;
+    this.pageNumber++;
+    this.selectedProduct = null;
+  }
+
 
   onSelect(product: Product) {
     this.selectedProduct = product;
@@ -25,8 +46,10 @@ export class ProductListComponent implements OnDestroy {
   }
 
   constructor(private productService: ProductService) {
+    this.products$ = this.productService.products$;
+
    // this.subscription = new Subscription();
-    this.products$ = productService.products$;
+
     // this.subscription.add(
     //   productService
     //   .products$
@@ -34,7 +57,6 @@ export class ProductListComponent implements OnDestroy {
     //     results => this.products = results
     //   )
     // );
-
   }
 
 }
